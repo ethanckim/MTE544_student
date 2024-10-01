@@ -3,7 +3,7 @@ import rclpy
 
 from rclpy.node import Node
 
-from utilities import Logger, euler_from_quaternion
+from utilities import Logger, euler_from_quaternion, convert_to_degrees
 from rclpy.qos import QoSProfile
 
 # Part 3: Import message types needed: 
@@ -49,7 +49,7 @@ class motion_executioner(Node):
         # Part 3: Create the QoS profile by setting the proper parameters
         # reliability = RELIABLE (2): messages are delivered to subscribers at least once (ack receipt)
         # durability = TRANSIENT_LOCAL (2): messages are stored for late-joining local subscribers
-        # history = KEEP_LAST (1): history buffer keeps most latest msgs
+        # history = KEEP_LAST (1): history buffer keeps 1 latest msg
         # depth = 10: queue depth
         qos=QoSProfile(reliability=2, durability=2, history=1, depth=10)
 
@@ -90,13 +90,14 @@ class motion_executioner(Node):
     def odom_callback(self, odom_msg: Odometry):
         # get timestamp
         timestamp = Time.from_msg(odom_msg.header.stamp).nanoseconds
-        
-        # get data: headers=["x","y","th", "stamp"]
+
+        # get data: headers=["x","y","th", "th_deg", "stamp"]
         odom_orientation = euler_from_quaternion(odom_msg.pose.pose.orientation)
+        odom_orientation_deg = convert_to_degrees(odom_orientation)
         odom_x_pos = odom_msg.pose.pose.position.x
         odom_y_pos = odom_msg.pose.pose.position.y
 
-        data_list = [odom_x_pos, odom_y_pos, odom_orientation, timestamp]
+        data_list = [odom_x_pos, odom_y_pos, odom_orientation, odom_orientation, timestamp]
 
         self.odom_logger.log_values(data_list)
         

@@ -85,7 +85,7 @@ class FileReader:
         return headers, table
 
 
-# Part 5: Implement the conversion from Quaternion to Euler Angles
+# Part 5: Convert from Quaternion to Euler Angles
 def euler_from_quaternion(quat):
     """
     Convert quaternion (w in last place) to euler roll, pitch, yaw.
@@ -108,7 +108,7 @@ def euler_from_quaternion(quat):
     yaw = calculate_yaw(x, y, z, w)
 
     # return yaw in degrees (can be changed to radians if wanted)
-    return yaw * 180 / M_PI
+    return yaw
 
 
 def normalize_quaternion(quat):
@@ -144,3 +144,7 @@ def calculate_yaw(x, y, z, w):
     cos_yaw_cos_pitch = 1.0 - 2.0 * (y * y + z * z)
     yaw = atan2(sin_yaw_cos_pitch, cos_yaw_cos_pitch)
     return yaw
+
+
+def convert_to_degrees(radians):
+    return radians * 180 / M_PI
