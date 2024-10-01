@@ -23,10 +23,16 @@ class Logger:
         with open(self.filename, 'a') as file:
             vals_str=""
 
-            # TODO Part 5: Write the values from the list to the file
-            ...
+            # Part 5: Write the values from the list to the file
+            for item in values_list:
+                if isinstance(item, list):
+                    # If item is a list, convert it to a list of strings and add to vals_str
+                    vals_str += ", ".join(map(str, item)) + ", "
+                else:
+                    vals_str += str(item) + ", "
             
-            vals_str+="\n"
+            # Remove trailing comma and add new line
+            vals_str = vals_str.rstrip(", ") + "\n"
             
             file.write(vals_str)
             
