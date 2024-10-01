@@ -17,8 +17,6 @@ from nav_msgs.msg import Odometry
 from rclpy.time import Time
 
 # You may add any other imports you may need/want to use below
-# import ...
-
 
 CIRCLE=0; SPIRAL=1; ACC_LINE=2
 motion_types=['circle', 'spiral', 'line']
@@ -92,11 +90,11 @@ class motion_executioner(Node):
         timestamp = Time.from_msg(odom_msg.header.stamp).nanoseconds
         
         # get data: headers=["x","y","th", "stamp"]
-        odom_orientation = euler_from_quaternion(odom_msg.pose.pose.orientation)
+        (roll_x, pitch_y, yaw_z) = euler_from_quaternion(odom_msg.pose.pose.orientation)
         odom_x_pos = odom_msg.pose.pose.position.x
         odom_y_pos = odom_msg.pose.pose.position.y
 
-        data_list = [odom_x_pos, odom_y_pos, odom_orientation, timestamp]
+        data_list = [odom_x_pos, odom_y_pos, yaw_z, timestamp]
 
         self.odom_logger.log_values(data_list)
         
