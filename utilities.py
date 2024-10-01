@@ -95,7 +95,7 @@ def euler_from_quaternion(quat):
     x, y, z, w = normalize_quaternion(quat)
 
     # Note that we are choosing not to handle gimbal lock because it is very unlikely to happen in our case
-    # the pitch and shouldn't be changing much
+    # the pitch shouldn't be changing much
     # If needed, we could test for gimbal lock
 
     # Calculate Roll - commented as not used
