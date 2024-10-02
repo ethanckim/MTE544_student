@@ -85,13 +85,66 @@ class FileReader:
         return headers, table
 
 
-# TODO Part 5: Implement the conversion from Quaternion to Euler Angles
+# Part 5: Convert from Quaternion to Euler Angles
 def euler_from_quaternion(quat):
     """
     Convert quaternion (w in last place) to euler roll, pitch, yaw.
     quat = [x, y, z, w]
     """
-    ... # just unpack yaw
+
+    x, y, z, w = normalize_quaternion(quat)
+
+    # Note that we are choosing not to handle gimbal lock because it is very unlikely to happen in our case
+    # the pitch shouldn't be changing much
+    # If needed, we could test for gimbal lock
+
+    # Calculate Roll - commented as not used
+    # roll = calculate_roll(x, y, z, w)
+
+    # Calculate Pitch - commented as not used
+    # pitch = calculate_pitch(x, y, z, w)
+
+    # Calculate Yaw
+    yaw = calculate_yaw(x, y, z, w)
+
+    # return yaw in degrees (can be changed to radians if wanted)
     return yaw
 
 
+def normalize_quaternion(quat):
+    x, y, z, w = quat
+
+    # normalize the quaternion to make sure it represents a valid rotation
+    # this shouldn't be necessary because ROS should give you a normalized quaternion, but its good practice
+    norm = sqrt(x**2 + y**2 + z**2 + w**2)
+    x /= norm
+    y /= norm
+    z /= norm
+    w /= norm
+
+    return x, y, z, w
+
+
+def calculate_roll(x, y, z, w):
+    sin_roll_cos_pitch = 2.0 * (w * x + y * z)
+    cos_roll_cos_pitch = 1.0 - 2.0 * (x**2 + y**2)
+    roll = atan2(sin_roll_cos_pitch, cos_roll_cos_pitch)
+    return roll
+
+
+def calculate_pitch(x, y, z, w):
+    sin_pitch = sqrt(1.0 + 2.0 * (w * y - x * z))
+    cos_pitch = sqrt(1.0 - 2.0 * (w * y - x * z))
+    pitch = 2.0 * atan2(sin_pitch, cos_pitch) - M_PI/2.0
+    return pitch
+
+
+def calculate_yaw(x, y, z, w):
+    sin_yaw_cos_pitch = 2.0 * (w * z + x * y)
+    cos_yaw_cos_pitch = 1.0 - 2.0 * (y * y + z * z)
+    yaw = atan2(sin_yaw_cos_pitch, cos_yaw_cos_pitch)
+    return yaw
+
+
+def convert_to_degrees(radians):
+    return radians * 180 / M_PI
