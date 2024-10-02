@@ -112,7 +112,10 @@ def euler_from_quaternion(quat):
 
 
 def normalize_quaternion(quat):
-    x, y, z, w = quat
+    x = quat.x
+    y = quat.y
+    z = quat.z
+    w = quat.w
 
     # normalize the quaternion to make sure it represents a valid rotation
     # this shouldn't be necessary because ROS should give you a normalized quaternion, but its good practice
