@@ -28,6 +28,7 @@ class MotionExecutioner(Node):
         self.type = motion_type
 
         self.spiral_angular_velocity_ = 0.0
+        self.spiral_direction_ = 1
 
         self.successful_init = False
         self.imu_initialized = False
@@ -155,10 +156,12 @@ class MotionExecutioner(Node):
     def make_spiral_twist(self):
         msg = Twist()
 
-        self.spiral_angular_velocity_ += 0.1
+        self.spiral_angular_velocity_ += 0.05 * self.spiral_direction_
 
-        if self.spiral_angular_velocity_ > 5.0:
-            self.spiral_angular_velocity_ = 0.0
+        if self.spiral_angular_velocity_ > 3.0:
+            self.spiral_direction_ = -1
+        elif self.spiral_angular_velocity_ < 0.1:
+            self.spiral_direction_ = 1
 
         msg.linear.x = 1.0
         msg.angular.z = self.spiral_angular_velocity_
