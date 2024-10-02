@@ -156,6 +156,10 @@ class MotionExecutioner(Node):
         msg = Twist()
 
         self.spiral_angular_velocity_ += 0.1
+
+        if self.spiral_angular_velocity_ > 5.0:
+            self.spiral_angular_velocity_ = 0.0
+
         msg.linear.x = 1.0
         msg.angular.z = self.spiral_angular_velocity_
 
