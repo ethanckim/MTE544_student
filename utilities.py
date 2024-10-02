@@ -1,4 +1,5 @@
 from math import atan2, sqrt
+import array
 
 M_PI = 3.1415926535
 
@@ -26,7 +27,7 @@ class Logger:
 
             # Part 5: Write the values from the list to the file
             for item in values_list:
-                if isinstance(item, list):
+                if isinstance(item, array.array):
                     # If item is a list, convert it to a list of strings and add to vals_str
                     vals_str += ", ".join(map(str, item)) + ", "
                 else:
