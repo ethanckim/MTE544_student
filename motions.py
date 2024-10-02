@@ -158,12 +158,12 @@ class MotionExecutioner(Node):
 
         self.spiral_angular_velocity_ += 0.05 * self.spiral_direction_
 
-        if self.spiral_angular_velocity_ > 3.0:
+        if self.spiral_angular_velocity_ > 2.0:
             self.spiral_direction_ = -1
         elif self.spiral_angular_velocity_ < 0.1:
             self.spiral_direction_ = 1
 
-        msg.linear.x = 1.0
+        msg.linear.x = 0.75
         msg.angular.z = self.spiral_angular_velocity_
 
         self.vel_publisher.publish(msg)
