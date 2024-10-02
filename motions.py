@@ -59,7 +59,7 @@ class MotionExecutioner(Node):
 
         # Encoder subscription
         self.create_subscription(Odometry, "/odom", self.odom_callback, qos_profile=qos)
-        self.odom_initialized = False
+        self.odom_initialized = True
 
         # LaserScan subscription 
         self.create_subscription(LaserScan, "/scan", self.laser_callback, qos_profile=qos)
