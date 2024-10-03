@@ -12,7 +12,6 @@ from sensor_msgs.msg import LaserScan
 
 from utilities import Logger, euler_from_quaternion, convert_to_degrees
 
-
 CIRCLE = 0;
 SPIRAL = 1;
 ACC_LINE = 2
@@ -27,8 +26,7 @@ class MotionExecutioner(Node):
 
         self.type = motion_type
 
-        self.spiral_angular_velocity_ = 0.0
-        self.spiral_direction_ = 1
+        self.time_passed_ = 0
 
         self.successful_init = False
         self.imu_initialized = False
@@ -147,8 +145,8 @@ class MotionExecutioner(Node):
 
         msg = Twist()
 
-        msg.linear.x = 1.0
-        msg.angular.z = 1.0
+        msg.linear.x = 0.3
+        msg.angular.z = 0.6
 
         self.vel_publisher.publish(msg)
         return msg
@@ -156,23 +154,22 @@ class MotionExecutioner(Node):
     def make_spiral_twist(self):
         msg = Twist()
 
-        self.spiral_angular_velocity_ += 0.05 * self.spiral_direction_
+        msg.linear.x = 0.5
 
-        if self.spiral_angular_velocity_ > 2.0:
-            self.spiral_direction_ = -1
-        elif self.spiral_angular_velocity_ < 0.1:
-            self.spiral_direction_ = 1
-
-        msg.linear.x = 0.75
-        msg.angular.z = self.spiral_angular_velocity_
+        if 2 - 0.01 * self.time_passed_ > 0:
+            msg.angular.z = 0.5 / (2 - 0.01 * self.time_passed_)
+        else:
+            msg.linear.x = 0
+            msg.angular.z = 0
 
         self.vel_publisher.publish(msg)
+        self.time_passed_ += 0.1
         return msg
 
     def make_acc_line_twist(self):
         msg = Twist()
 
-        msg.linear.x = 1.0
+        msg.linear.x = 0.3
 
         self.vel_publisher.publish(msg)
         return msg
