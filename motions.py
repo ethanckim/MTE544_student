@@ -1,4 +1,5 @@
 import rclpy
+import argparse
 # Part 3: Import message types needed:
 # For sending velocity commands to the robot: Twist
 # For the sensors: Imu, LaserScan, and Odometry
@@ -154,20 +155,22 @@ class MotionExecutioner(Node):
     def make_spiral_twist(self):
         msg = Twist()
 
+        # These parameters will affect the spiral
         constant_linear_vel = 0.5
-
-        msg.linear.x = constant_linear_vel
         rate_of_decrease = 0.05
         initial_radius = 1
 
+        # If spiral radius is greater than 0, keep updating the angular velocity
         if initial_radius - rate_of_decrease * self.time_passed_ > 0:
-            msg.angular.z = constant_linear_vel / (initial_radius - rate_of_decrease * self.time_passed_)
+            msg.linear.x = constant_linear_vel # Constant linear velocity
+            msg.angular.z = constant_linear_vel / (initial_radius - rate_of_decrease * self.time_passed_) # Decreasing angular velocity
         else:
+            # Stop the robot when the spiral radius becomes 0
             msg.linear.x = 0
             msg.angular.z = 0
 
         self.vel_publisher.publish(msg)
-        self.time_passed_ += 0.1
+        self.time_passed_ += 0.1 # Increment time passed by 0.1 seconds everytime the callback runs
         return msg
 
     def make_acc_line_twist(self):
@@ -178,8 +181,6 @@ class MotionExecutioner(Node):
         self.vel_publisher.publish(msg)
         return msg
 
-
-import argparse
 
 if __name__ == "__main__":
 
