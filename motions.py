@@ -13,8 +13,8 @@ from sensor_msgs.msg import LaserScan
 
 from utilities import Logger, euler_from_quaternion, convert_to_degrees
 
-CIRCLE = 0;
-SPIRAL = 1;
+CIRCLE = 0
+SPIRAL = 1
 ACC_LINE = 2
 motion_types = ['circle', 'spiral', 'line']
 
