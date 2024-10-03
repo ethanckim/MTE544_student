@@ -157,7 +157,7 @@ class MotionExecutioner(Node):
         msg.linear.x = 0.5
 
         if 2 - 0.01 * self.time_passed_ > 0:
-            msg.angular.z = 0.5 / (2 - 0.01 * self.time_passed_)
+            msg.angular.z = 0.5 / (2 - 0.05 * self.time_passed_)
         else:
             msg.linear.x = 0
             msg.angular.z = 0
