@@ -154,10 +154,14 @@ class MotionExecutioner(Node):
     def make_spiral_twist(self):
         msg = Twist()
 
-        msg.linear.x = 0.5
+        constant_linear_vel = 0.5
 
-        if 2 - 0.01 * self.time_passed_ > 0:
-            msg.angular.z = 0.5 / (2 - 0.05 * self.time_passed_)
+        msg.linear.x = constant_linear_vel
+        rate_of_decrease = 0.05
+        initial_radius = 1
+
+        if initial_radius - rate_of_decrease * self.time_passed_ > 0:
+            msg.angular.z = constant_linear_vel / (initial_radius - rate_of_decrease * self.time_passed_)
         else:
             msg.linear.x = 0
             msg.angular.z = 0
