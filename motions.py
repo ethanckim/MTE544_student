@@ -38,6 +38,7 @@ class MotionExecutioner(Node):
         self.vel_publisher = self.create_publisher(Twist, '/cmd_vel', 10)
 
         # loggers
+        # Note that we have added a th_deg field to the odometry logger for convenience
         self.imu_logger = Logger('imu_content_' + str(motion_types[motion_type]) + '.csv',
                                  headers=["acc_x", "acc_y", "angular_z", "stamp"])
         self.odom_logger = Logger('odom_content_' + str(motion_types[motion_type]) + '.csv',
@@ -95,7 +96,7 @@ class MotionExecutioner(Node):
         timestamp = Time.from_msg(odom_msg.header.stamp).nanoseconds
 
         # get data: headers=["x","y","th", "th_deg", "stamp"]
-        odom_orientation = euler_from_quaternion(odom_msg.pose.pose.orientation)
+        odom_orientation = euler_from_quaternion(odom_msg.pose.pose.orientation) # Convert to euler angle
         odom_orientation_deg = convert_to_degrees(odom_orientation)
         odom_x_pos = odom_msg.pose.pose.position.x
         odom_y_pos = odom_msg.pose.pose.position.y
@@ -152,6 +153,7 @@ class MotionExecutioner(Node):
 
         msg = Twist()
 
+        # Constant linear speed with constant angular velocity causes circular motion
         msg.linear.x = 0.3
         msg.angular.z = 0.6
 
@@ -161,7 +163,7 @@ class MotionExecutioner(Node):
     def make_spiral_twist(self):
         msg = Twist()
 
-        # These parameters will affect the spiral
+        # Initial parameters to control spiral speed and size
         constant_linear_vel = 0.5
         rate_of_decrease = 0.05
         initial_radius = 1
@@ -182,6 +184,7 @@ class MotionExecutioner(Node):
     def make_acc_line_twist(self):
         msg = Twist()
 
+        # Simply set a constant linear velocity, and no angular velocity for straight line motion
         msg.linear.x = 0.3
 
         self.vel_publisher.publish(msg)

@@ -1,4 +1,4 @@
-# You can use this file to plot the loged sensor data
+# You can use this file to plot the logged sensor data
 # Note that you need to modify/adapt it to your own files
 # Feel free to make any modifications/additions here
 
@@ -12,13 +12,28 @@ def plot_errors(filename):
     first_stamp=values[0][-1]
     
     for val in values:
-        time_list.append(val[-1] - first_stamp)
+        time_val = val[-1] - first_stamp
+        # convert time_val from ns to s
+        time_list.append(time_val/1e9)
 
     for i in range(0, len(headers) - 1):
-        plt.plot(time_list, [lin[i] for lin in values], label= headers[i]+ " linear")
-    
-    #plt.plot([lin[0] for lin in values], [lin[1] for lin in values])
-    plt.legend()
+        # skip the degree data for plotting
+        if headers[i] == "th_deg":
+            continue
+        plt.plot(time_list, [lin[i] for lin in values])
+
+    # Uncomment the relevant lines to plot the data for the specific motion - labels, titles
+    plt.legend(["X Acceleration [m/s^2]", "Y Acceleration [m/s^2]", 'Angular Velocity [rad/s]'])
+    # plt.legend(["X Position [m]", "Y Position [m]", 'Orientation [rad]'])
+    # plt.title("IMU Data for Circular Motion")
+    # plt.title("IMU Data for Spiral Motion")
+    plt.title("IMU Data for Straight Line Motion")
+    # plt.title("ODOM Data for Circular Motion")
+    # plt.title("ODOM Data for Spiral Motion")
+    # plt.title("ODOM Data for Straight Line Motion")
+    plt.xlabel("Time (s)")
+    plt.ylabel("Acceleration (X, Y), Velocity (θ)")
+    # plt.ylabel("Position")
     plt.grid()
     plt.show()
     

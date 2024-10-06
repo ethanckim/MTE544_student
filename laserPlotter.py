@@ -8,27 +8,43 @@ import numpy as np
 import math
 
 def plot_laser(filename):
-    headers, values=FileReader(filename).read_file() 
+    headers, values=FileReader(filename).read_file()
 
-    ang_increment = values[0][-2]
+    # Choose an arbitrary row index to plot (we are only asked to plot one scan)
+    row_index = 20
+
+    # Get the angle increment
+    ang_increment = values[row_index][-2]
+
+    # Start plotting from theta = 0
     theta = 0
+
+    # Initialize lists to hold x and y data for each point
     x = []
     y = []
 
-    for i in range(0, len(values[0])-2):
-        r = float(values[0][i])
+    for i in range(0, len(values[row_index])-2):
+        # Get radius of point
+        r = float(values[row_index][i])
 
+        # Skip inf or NaN values but still increment theta
         if math.isinf(r) or math.isnan(r):
             theta += ang_increment
             continue
 
-        x.append(values[0][i] * np.cos(theta))
-        y.append(values[0][i] * np.sin(theta))
+        # Convert polar coordinates to cartesian and append to appropriate list
+        x.append(values[row_index][i] * np.cos(theta))
+        y.append(values[row_index][i] * np.sin(theta))
 
+        # Increment theta by the angle increment
         theta += ang_increment
-    
-    plt.plot(x, y, label= "2D Top View Trajectory (x vs y)")
+
+    # Plot the data with relevant title, labels, legend, etc.
+    plt.scatter(x, y, label= "2D Top View Trajectory (x vs y)")
     plt.legend()
+    plt.title("Cartesian Pose Data from Single Laser Scan")
+    plt.xlabel("X [m]")
+    plt.ylabel("Y [m]")
     plt.grid()
     plt.show()
 
