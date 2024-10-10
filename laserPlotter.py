@@ -11,7 +11,7 @@ def plot_laser(filename):
     headers, values=FileReader(filename).read_file()
 
     # Choose an arbitrary row index to plot (we are only asked to plot one scan)
-    row_index = 20
+    row_index = 5
 
     # Get the angle increment
     ang_increment = values[row_index][-2]
@@ -40,9 +40,9 @@ def plot_laser(filename):
         theta += ang_increment
 
     # Plot the data with relevant title, labels, legend, etc.
-    plt.scatter(x, y, label= "2D Top View Trajectory (x vs y)")
+    plt.scatter(x, y, label= "Scanned Points")
     plt.legend()
-    plt.title("Cartesian Pose Data from Single Laser Scan")
+    plt.title("Cartesian Pose Data from Single Laser Scan (Straight Line Motion)")
     plt.xlabel("X [m]")
     plt.ylabel("Y [m]")
     plt.grid()
