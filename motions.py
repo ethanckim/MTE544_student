@@ -73,7 +73,7 @@ class MotionExecutioner(Node):
     # You can save the needed fields into a list, and pass the list to the log_values function in utilities.py
     def imu_callback(self, imu_msg: Imu):
         # imu is publishing data:
-        self.imu_initialized = True;
+        self.imu_initialized = True
 
         # get timestamp
         timestamp = Time.from_msg(imu_msg.header.stamp).nanoseconds
@@ -86,6 +86,7 @@ class MotionExecutioner(Node):
         # Consolidate data to list
         imu_data_list = [imu_acc_x, imu_acc_y, imu_angular_z, timestamp]
 
+        # log the data
         self.imu_logger.log_values(imu_data_list)
 
     def odom_callback(self, odom_msg: Odometry):
@@ -104,6 +105,7 @@ class MotionExecutioner(Node):
         # Consolidate data to list
         data_list = [odom_x_pos, odom_y_pos, odom_orientation, odom_orientation_deg, timestamp]
 
+        # log the data
         self.odom_logger.log_values(data_list)
 
     def laser_callback(self, laser_msg: LaserScan):
@@ -118,8 +120,10 @@ class MotionExecutioner(Node):
         angle_increment = laser_msg.angle_increment
 
         # Consolidate data to list
+        # Note we intentionally pass the ranges in as a list, the logger function will handle it appropriately
         data_list = [ranges, angle_increment, timestamp]
 
+        # log the data
         self.laser_logger.log_values(data_list)
 
     def timer_callback(self):
@@ -163,7 +167,7 @@ class MotionExecutioner(Node):
     def make_spiral_twist(self):
         msg = Twist()
 
-        # Initial parameters to control spiral speed and size
+        # Initial parameters to control spiral speed and size - these were tuned in lab
         constant_linear_vel = 0.5
         rate_of_decrease = 0.05
         initial_radius = 1
@@ -171,6 +175,7 @@ class MotionExecutioner(Node):
         # If spiral radius is greater than 0, keep updating the angular velocity
         if initial_radius - rate_of_decrease * self.time_passed_ > 0:
             msg.linear.x = constant_linear_vel # Constant linear velocity
+            # Note we are decreasing the radius linearly which results in the following equation for angular velocity
             msg.angular.z = constant_linear_vel / (initial_radius - rate_of_decrease * self.time_passed_) # Decreasing angular velocity
         else:
             # Stop the robot when the spiral radius becomes 0

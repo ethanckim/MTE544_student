@@ -10,12 +10,13 @@ def plot_xy(filename):
     x_data=[lin[0] for lin in values]
     y_data=[lin[1] for lin in values]
     
-    plt.plot(x_data, y_data, label= "circle motion") # change label to line motion / spiral motion / circle motion
-    plt.legend()
-    plt.title("2D Top View Trajectory (x vs y) from /odom")
-    plt.xlabel("X [m]")
-    plt.ylabel("Y [m]")
+    plt.plot(x_data, y_data)
+    plt.title("2D Top View Trajectory (x vs y) - Spiral Motion")
+    plt.legend(['Trajectory'])
+    plt.xlabel("X Position (m)")
+    plt.ylabel("Y Position (m)")
     plt.grid()
+    plt.axis('equal')
     plt.show()
 
 import argparse

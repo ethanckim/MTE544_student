@@ -93,11 +93,12 @@ def euler_from_quaternion(quat):
     quat = [x, y, z, w]
     """
 
+    # Not strictly necessary because ROS provides normalized quat but doing it just in case
     x, y, z, w = normalize_quaternion(quat)
 
     # Note that we are choosing not to handle gimbal lock because it is very unlikely to happen in our case
     # the pitch shouldn't be changing much
-    # If needed, we could test for gimbal lock
+    # If needed, we could test for gimbal lock and handle it accordingly
 
     # Calculate Roll - commented as not used
     # roll = calculate_roll(x, y, z, w)
@@ -108,7 +109,7 @@ def euler_from_quaternion(quat):
     # Calculate Yaw
     yaw = calculate_yaw(x, y, z, w)
 
-    # return yaw in degrees (can be changed to radians if wanted)
+    # return yaw in radians
     return yaw
 
 
@@ -129,6 +130,7 @@ def normalize_quaternion(quat):
     return x, y, z, w
 
 
+# this function calculates the roll from the quaternion data
 def calculate_roll(x, y, z, w):
     sin_roll_cos_pitch = 2.0 * (w * x + y * z)
     cos_roll_cos_pitch = 1.0 - 2.0 * (x ** 2 + y ** 2)
@@ -136,6 +138,7 @@ def calculate_roll(x, y, z, w):
     return roll
 
 
+# this function calculates the pitch from the quaternion data
 def calculate_pitch(x, y, z, w):
     sin_pitch = sqrt(1.0 + 2.0 * (w * y - x * z))
     cos_pitch = sqrt(1.0 - 2.0 * (w * y - x * z))
@@ -143,6 +146,7 @@ def calculate_pitch(x, y, z, w):
     return pitch
 
 
+# this function calculates the yaw from the quaternion data
 def calculate_yaw(x, y, z, w):
     sin_yaw_cos_pitch = 2.0 * (w * z + x * y)
     cos_yaw_cos_pitch = 1.0 - 2.0 * (y * y + z * z)
@@ -150,5 +154,6 @@ def calculate_yaw(x, y, z, w):
     return yaw
 
 
+# Convert from Radians to Degrees
 def convert_to_degrees(radians):
     return radians * 180 / M_PI
