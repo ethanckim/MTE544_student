@@ -58,11 +58,15 @@ class decision_maker(Node):
 
         self.create_timer(publishing_period, self.timerCallback)
 
+        self.linear_threshold = 0.1
+
+        self.angular_threshold = 0.05
+
 
     def timerCallback(self):
         
-        # TODO Part 3: Run the localization node
-        ...    # Remember that this file is already running the decision_maker node.
+        # Part 3: Run the localization node
+        spin_once(self.localizer)
 
         if self.localizer.getPose()  is  None:
             print("waiting for odom msgs ....")
@@ -70,12 +74,13 @@ class decision_maker(Node):
 
         vel_msg=Twist()
         
-        # TODO Part 3: Check if you reached the goal
-        if type(self.goal) == list:
-            reached_goal=...
-        else: 
-            reached_goal=...
-        
+        # Part 3: Check if you reached the goal
+        if type(self.goal) == list: # Trajectory planner
+            reached_goal = (calculate_linear_error(self.localizer.getPose(), self.goal) < self.linear_threshold and
+                        calculate_angular_error(self.localizer.getPose(), self.goal) < self.angular_threshold)
+        else: # Point planner
+            reached_goal = (calculate_linear_error(self.localizer.getPose(), [self.goal[0], self.goal[1]]) < self.linear_threshold and
+                            calculate_angular_error(self.localizer.getPose(), [self.goal[0], self.goal[1]]) < self.angular_threshold)
 
         if reached_goal:
             print("reached goal")
@@ -84,8 +89,8 @@ class decision_maker(Node):
             self.controller.PID_angular.logger.save_log()
             self.controller.PID_linear.logger.save_log()
             
-            #TODO Part 3: exit the spin
-            ... 
+            # Part 3: exit the spin
+            raise SystemExit
         
         velocity, yaw_rate = self.controller.vel_request(self.localizer.getPose(), self.goal, True)
 
@@ -99,7 +104,7 @@ def main(args=None):
     
     init()
 
-    # TODO Part 3: You migh need to change the QoS profile based on whether you're using the real robot or in simulation.
+    # Part 3: You might need to change the QoS profile based on whether you're using the real robot or in simulation.
     # Remember to define your QoS profile based on the information available in "ros2 topic info /odom --verbose" as explained in Tutorial 3
     
     odom_qos=QoSProfile(reliability=2, durability=2, history=1, depth=10)
