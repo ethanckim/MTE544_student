@@ -24,12 +24,12 @@ from controller import controller, trajectoryController
 
 class decision_maker(Node):
     
-    def __init__(self, publisher_msg, publishing_topic, qos_publisher, goalPoint, rate=10, motion_type=POINT_PLANNER):
+    def __init__(self, publisher_msg, publishing_topic, qos_publisher, goalPoint=None, rate=10, motion_type=POINT_PLANNER):
 
         super().__init__("decision_maker")
 
-        #TODO Part 4: Create a publisher for the topic responsible for robot's motion
-        self.publisher=... 
+        # Part 4: Create a publisher for the topic responsible for robot's motion
+        self.publisher=self.create_publisher(publisher_msg, publishing_topic, qos_publisher)
 
         publishing_period=1/rate
         
@@ -94,8 +94,11 @@ class decision_maker(Node):
         
         velocity, yaw_rate = self.controller.vel_request(self.localizer.getPose(), self.goal, True)
 
-        #TODO Part 4: Publish the velocity to move the robot
-        ... 
+        # Part 4: Publish the velocity to move the robot
+        vel_msg.linear.x = velocity
+        vel_msg.angular.z = yaw_rate
+
+        self.publisher.publish(vel_msg)
 
 import argparse
 
@@ -110,11 +113,11 @@ def main(args=None):
     odom_qos=QoSProfile(reliability=2, durability=2, history=1, depth=10)
     
 
-    # TODO Part 4: instantiate the decision_maker with the proper parameters for moving the robot
+    # Part 4: instantiate the decision_maker with the proper parameters for moving the robot
     if args.motion.lower() == "point":
-        DM=decision_maker(...)
+        DM=decision_maker(Twist, "/cmd_vel", odom_qos)
     elif args.motion.lower() == "trajectory":
-        DM=decision_maker(...)
+        DM=decision_maker(Twist, "/cmd_vel", odom_qos)
     else:
         print("invalid motion type", file=sys.stderr)        
     
