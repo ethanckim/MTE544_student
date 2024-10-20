@@ -40,16 +40,15 @@ class controller:
         # Part 4: Add saturation limits for the robot linear and angular velocity
 
         # Turtle Bot 4 Limits
-        linear_max = 0.31
-        angular_max = 1.90
+        linear_max = 0.31 # m/s
+        angular_max = 1.90 # rad/s
 
         # Turtle Bot 3 Burger Limits
-        # linear_max = 0.22
-        # angular_max = 2.84
+        # linear_max = 0.22 # m/s
+        # angular_max = 2.84 # rad/s
 
-        # kind of unsure about this code here, shouldn't we clip the negative maxes too? - but this is the code given
-        linear_vel = linear_max if linear_vel > linear_max else linear_vel
-        angular_vel= angular_max if angular_vel > angular_max else angular_vel
+        linear_vel = linear_max if abs(angular_vel) > linear_max else linear_vel
+        angular_vel= angular_max if abs(angular_vel) > angular_max else angular_vel
         
         return linear_vel, angular_vel
     
@@ -76,16 +75,15 @@ class trajectoryController(controller):
         # Part 5: Add saturation limits for the robot linear and angular velocity
 
         # Turtle Bot 4 Limits
-        linear_max = 0.31
-        angular_max = 1.90
+        linear_max = 0.31 # m/s
+        angular_max = 1.90 # rad/s
 
         # Turtle Bot 3 Burger Limits
-        # linear_max = 0.22
-        # angular_max = 2.84
+        # linear_max = 0.22 # m/s
+        # angular_max = 2.84 # rad/s
 
-        # kind of unsure about this code here, shouldn't we clip the negative maxes too? - but this is the code given
-        linear_vel = linear_max if linear_vel > linear_max else linear_vel
-        angular_vel= angular_max if angular_vel > angular_max else angular_vel
+        linear_vel = linear_max if abs(angular_vel) > linear_max else linear_vel
+        angular_vel= angular_max if abs(angular_vel) > angular_max else angular_vel
         
         return linear_vel, angular_vel
 

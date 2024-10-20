@@ -68,19 +68,20 @@ class decision_maker(Node):
         # Part 3: Run the localization node
         spin_once(self.localizer)
 
-        if self.localizer.getPose()  is  None:
+        if self.localizer.getPose() is None:
             print("waiting for odom msgs ....")
             return
 
         vel_msg=Twist()
         
         # Part 3: Check if you reached the goal
+        currPose = self.localizer.getPose()
         if type(self.goal) == list: # Trajectory planner
-            reached_goal = (calculate_linear_error(self.localizer.getPose(), self.goal) < self.linear_threshold and
-                        calculate_angular_error(self.localizer.getPose(), self.goal) < self.angular_threshold)
+            reached_goal = (abs(calculate_linear_error(currPose, self.goal[-1])) < self.linear_threshold and
+                            abs(calculate_angular_error(currPose, self.goal[-1])) < self.angular_threshold)
         else: # Point planner
-            reached_goal = (calculate_linear_error(self.localizer.getPose(), [self.goal[0], self.goal[1]]) < self.linear_threshold and
-                            calculate_angular_error(self.localizer.getPose(), [self.goal[0], self.goal[1]]) < self.angular_threshold)
+            reached_goal = (abs(calculate_linear_error(currPose, self.goal)) < self.linear_threshold and
+                            abs(calculate_angular_error(currPose, self.goal)) < self.angular_threshold)
 
         if reached_goal:
             print("reached goal")
