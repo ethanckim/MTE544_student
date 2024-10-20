@@ -32,7 +32,7 @@ class localization(Node):
             print("This type doesn't exist", sys.stderr)
     
     
-    def odom_callback(self, pose_msg):
+    def odom_callback(self, pose_msg: odom):
         
         # Part 3: Read x,y, theta, and record the stamp
         odom_orientation = euler_from_quaternion(pose_msg.pose.pose.orientation)
