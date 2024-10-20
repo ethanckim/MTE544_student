@@ -53,14 +53,13 @@ class decision_maker(Node):
         self.localizer=localization(rawSensor)
 
         # Instantiate the planner
-        # NOTE: goalPoint is used only for the pointPlanner
-        self.goal=self.planner.plan(goalPoint)
+        self.goal=self.planner.plan()
+
+        # Error thresholds for evaluating if goal is reached
+        self.linear_threshold = 0.1 # m
+        self.angular_threshold = 0.05 # rad
 
         self.create_timer(publishing_period, self.timerCallback)
-
-        self.linear_threshold = 0.1
-
-        self.angular_threshold = 0.05
 
 
     def timerCallback(self):
