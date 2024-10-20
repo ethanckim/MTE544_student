@@ -10,7 +10,7 @@ from rclpy import init, spin, spin_once
 from rclpy.node import Node
 from geometry_msgs.msg import Twist
 
-from rclpy.qos import QoSProfile
+from rclpy.qos import QoSProfile, QoSReliabilityPolicy, QoSDurabilityPolicy, QoSHistoryPolicy
 from nav_msgs.msg import Odometry as odom
 
 from localization import localization, rawSensor
@@ -108,19 +108,19 @@ def main(args=None):
     init()
 
     # Part 3: You might need to change the QoS profile based on whether you're using the real robot or in simulation.
-    # Remember to define your QoS profile based on the information available in "ros2 topic info /odom --verbose" as explained in Tutorial 3
-    
-    odom_qos=QoSProfile(reliability=2, durability=2, history=1, depth=10)
+    cmd_vel_qos=QoSProfile(reliability=QoSReliabilityPolicy.RELIABLE,
+                        durability=QoSDurabilityPolicy.VOLATILE,
+                        history=QoSHistoryPolicy.KEEP_LAST,
+                        depth=10)
     
 
     # Part 4: instantiate the decision_maker with the proper parameters for moving the robot
     if args.motion.lower() == "point":
-        DM=decision_maker(Twist, "/cmd_vel", odom_qos)
+        DM=decision_maker(Twist, "/cmd_vel", cmd_vel_qos, motion_type=POINT_PLANNER)
     elif args.motion.lower() == "trajectory":
-        DM=decision_maker(Twist, "/cmd_vel", odom_qos)
+        DM=decision_maker(Twist, "/cmd_vel", cmd_vel_qos, motion_type=TRAJECTORY_PLANNER)
     else:
-        print("invalid motion type", file=sys.stderr)        
-    
+        print("invalid motion type", file=sys.stderr)
     
     
     try:
