@@ -17,10 +17,18 @@ class localization(Node):
         super().__init__("localizer")
         
         # Part 3: Define the QoS profile variable based on whether you are using the simulation (Turtlebot 3 Burger) or the real robot (Turtlebot 4)
-        odom_qos=QoSProfile(reliability=QoSReliabilityPolicy.BEST_EFFORT,
-                            durability=QoSDurabilityPolicy.VOLATILE,
-                            history=QoSHistoryPolicy.KEEP_LAST,
-                            depth=10)
+
+        # Turtle Bot 4 Odom QOS
+        # odom_qos=QoSProfile(reliability=QoSReliabilityPolicy.BEST_EFFORT,
+        #                     durability=QoSDurabilityPolicy.VOLATILE,
+        #                     history=QoSHistoryPolicy.KEEP_LAST,
+        #                     depth=10)
+
+        # Turtle Bot 3 Odom QOS
+        odom_qos = QoSProfile(reliability=QoSReliabilityPolicy.RELIABLE,
+                              durability=QoSDurabilityPolicy.VOLATILE,
+                              history=QoSHistoryPolicy.KEEP_LAST,
+                              depth=10)
         
         self.loc_logger=Logger("robot_pose.csv", ["x", "y", "theta", "stamp"])
         self.pose=None
