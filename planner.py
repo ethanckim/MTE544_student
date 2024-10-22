@@ -9,7 +9,7 @@ class planner:
     def __init__(self, type_):
 
         self.type=type_
-        self.trajectoryType = PARABOLA_TRAJECTORY
+        self.trajectoryType = SIGMOID_TRAJECTORY
 
     def plan(self, goalPoint=[-1.0, -1.0]):
         # NOTE: goalPoint is used only for the pointPlanner
@@ -29,6 +29,7 @@ class planner:
         return x, y
 
     # Part 6: Implement the trajectories here
+    # Regular Sigmoid
     def sigmoid_trajectory_planner(self):
         trajectory_points = []
         x_values = np.linspace(0, 2.5, num=25)
@@ -37,10 +38,39 @@ class planner:
             trajectory_points.append([x, y])
         return trajectory_points
 
+    # Simulation Sigmoid
+    def sigmoid_trajectory_planner(self):
+        trajectory_points = []
+        x_values = np.linspace(-2, 0.5, num=25)
+
+        # Robot in sim starts off at these coordinates so it was required
+        starting_x = -2
+        starting_y = -0.5
+
+        for x in x_values:
+            y = 2 / (1 + np.exp(-2 * (x-starting_x))) - 1 + starting_y
+            trajectory_points.append([x, y])
+        return trajectory_points
+
+    # Regular parabola
+    # def parabola_trajectory_planner(self):
+    #     trajectory_points = []
+    #     x_values = np.linspace(0, 1.5, num=15)
+    #     for x in x_values:
+    #         y = x ** 2
+    #         trajectory_points.append([x, y])
+    #     return trajectory_points
+
+    # Simulation Parabola
     def parabola_trajectory_planner(self):
         trajectory_points = []
-        x_values = np.linspace(0, 1.5, num=15)
+        x_values = np.linspace(-2, -0.5, num=15)
+
+        # Robot in sim starts off at these coordinates so it was required
+        starting_x = -2
+        starting_y = -0.5
+
         for x in x_values:
-            y = x ** 2
+            y = ((x-starting_x) ** 2) + starting_y
             trajectory_points.append([x, y])
         return trajectory_points
