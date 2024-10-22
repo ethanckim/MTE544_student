@@ -12,20 +12,12 @@ class controller:
     
     
     # Default gains of the controller for linear and angular motions
-    def __init__(self, klp=0.2, klv=0.2, kli=0.2, kap=0.2, kav=0.2, kai=0.2):
+    def __init__(self, klp=0.2, klv=0.2, kli=0.2, kap=0.2, kav=0.2, kai=0.2, controller_type=0):
         
-        # TODO Part 5 and 6: Modify the below lines to test your PD, PI, and PID controller
-        self.PID_linear=PID_ctrl(P, klp, klv, kli, filename_="linear.csv")
-        self.PID_angular=PID_ctrl(P, kap, kav, kai, filename_="angular.csv")
-
-        # self.PID_linear=PID_ctrl(PD, klp, klv, kli, filename_="linear.csv")
-        # self.PID_angular=PID_ctrl(PD, kap, kav, kai, filename_="angular.csv")
-
-        # self.PID_linear=PID_ctrl(PI, klp, klv, kli, filename_="linear.csv")
-        # self.PID_angular=PID_ctrl(PI, kap, kav, kai, filename_="angular.csv")
-
-        # self.PID_linear=PID_ctrl(PID, klp, klv, kli, filename_="linear.csv")
-        # self.PID_angular=PID_ctrl(PID, kap, kav, kai, filename_="angular.csv")
+        # Part 5 and 6: Modify the below lines to test your PD, PI, and PID controller
+        # Note we have passed in a controller_type parameter to choose the type of controller
+        self.PID_linear=PID_ctrl(controller_type, klp, klv, kli, filename_="linear.csv")
+        self.PID_angular=PID_ctrl(controller_type, kap, kav, kai, filename_="angular.csv")
 
     
     def vel_request(self, pose, goal, status):
