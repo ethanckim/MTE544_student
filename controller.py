@@ -47,8 +47,8 @@ class controller:
         # linear_max = 0.22 # m/s
         # angular_max = 2.84 # rad/s
 
-        linear_vel = linear_max if abs(angular_vel) > linear_max else linear_vel
-        angular_vel= angular_max if abs(angular_vel) > angular_max else angular_vel
+        linear_vel = linear_max if linear_vel > linear_max else linear_vel
+        angular_vel= angular_max * np.sign(angular_vel) if abs(angular_vel) > angular_max else angular_vel
         
         return linear_vel, angular_vel
     
@@ -82,8 +82,8 @@ class trajectoryController(controller):
         # linear_max = 0.22 # m/s
         # angular_max = 2.84 # rad/s
 
-        linear_vel = linear_max if abs(angular_vel) > linear_max else linear_vel
-        angular_vel= angular_max if abs(angular_vel) > angular_max else angular_vel
+        linear_vel = linear_max if linear_vel > linear_max else linear_vel
+        angular_vel= angular_max * np.sign(angular_vel) if abs(angular_vel) > angular_max else angular_vel
         
         return linear_vel, angular_vel
 
