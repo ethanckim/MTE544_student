@@ -125,16 +125,16 @@ def main(args=None):
     # Part 3: You might need to change the QoS profile based on whether you're using the real robot or in simulation.
 
     # Turtle Bot 4 CMD VEL QOS
-    # cmd_vel_qos=QoSProfile(reliability=QoSReliabilityPolicy.RELIABLE,
-    #                     durability=QoSDurabilityPolicy.VOLATILE,
-    #                     history=QoSHistoryPolicy.KEEP_LAST,
-    #                     depth=10)
+    cmd_vel_qos=QoSProfile(reliability=QoSReliabilityPolicy.RELIABLE,
+                        durability=QoSDurabilityPolicy.VOLATILE,
+                        history=QoSHistoryPolicy.KEEP_LAST,
+                        depth=10)
 
     # Turtle Bot 3 CMD VEL QOS
-    cmd_vel_qos = QoSProfile(reliability=QoSReliabilityPolicy.RELIABLE,
-                             durability=QoSDurabilityPolicy.VOLATILE,
-                             history=QoSHistoryPolicy.KEEP_LAST,
-                             depth=10)
+    # cmd_vel_qos = QoSProfile(reliability=QoSReliabilityPolicy.RELIABLE,
+    #                          durability=QoSDurabilityPolicy.VOLATILE,
+    #                          history=QoSHistoryPolicy.KEEP_LAST,
+    #                          depth=10)
     
 
     # Part 4: instantiate the decision_maker with the proper parameters for moving the robot

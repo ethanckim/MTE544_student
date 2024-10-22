@@ -39,38 +39,38 @@ class planner:
         return trajectory_points
 
     # Simulation Sigmoid
-    def sigmoid_trajectory_planner(self):
-        trajectory_points = []
-        x_values = np.linspace(-2, 0.5, num=25)
-
-        # Robot in sim starts off at these coordinates so it was required
-        starting_x = -2
-        starting_y = -0.5
-
-        for x in x_values:
-            y = 2 / (1 + np.exp(-2 * (x-starting_x))) - 1 + starting_y
-            trajectory_points.append([x, y])
-        return trajectory_points
-
-    # Regular parabola
-    # def parabola_trajectory_planner(self):
+    # def sigmoid_trajectory_planner(self):
     #     trajectory_points = []
-    #     x_values = np.linspace(0, 1.5, num=15)
+    #     x_values = np.linspace(-2, 0.5, num=25)
+    #
+    #     # Robot in sim starts off at these coordinates so it was required
+    #     starting_x = -2
+    #     starting_y = -0.5
+    #
     #     for x in x_values:
-    #         y = x ** 2
+    #         y = 2 / (1 + np.exp(-2 * (x-starting_x))) - 1 + starting_y
     #         trajectory_points.append([x, y])
     #     return trajectory_points
 
-    # Simulation Parabola
+    # Regular parabola
     def parabola_trajectory_planner(self):
         trajectory_points = []
-        x_values = np.linspace(-2, -0.5, num=15)
-
-        # Robot in sim starts off at these coordinates so it was required
-        starting_x = -2
-        starting_y = -0.5
-
+        x_values = np.linspace(0, 1.5, num=15)
         for x in x_values:
-            y = ((x-starting_x) ** 2) + starting_y
+            y = x ** 2
             trajectory_points.append([x, y])
         return trajectory_points
+
+    # Simulation Parabola
+    # def parabola_trajectory_planner(self):
+    #     trajectory_points = []
+    #     x_values = np.linspace(-2, -0.5, num=15)
+    #
+    #     # Robot in sim starts off at these coordinates so it was required
+    #     starting_x = -2
+    #     starting_y = -0.5
+    #
+    #     for x in x_values:
+    #         y = ((x-starting_x) ** 2) + starting_y
+    #         trajectory_points.append([x, y])
+    #     return trajectory_points
