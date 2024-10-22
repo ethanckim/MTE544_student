@@ -2,7 +2,7 @@ from rclpy.time import Time
 from utilities import Logger
 
 # Controller type
-P=0 # poportional
+P=0 # proportional
 PD=1 # proportional and derivative
 PI=2 # proportional and integral
 PID=3 # proportional, integral, derivative
@@ -38,7 +38,7 @@ class PID_ctrl:
     def __update(self, stamped_error):
         
         latest_error=stamped_error[0]
-        stamp=stamped_error[1]
+        stamp = Time.from_msg(stamped_error[1]).nanoseconds
         
         self.history.append(stamped_error)        
         
@@ -80,7 +80,7 @@ class PID_ctrl:
         error_int=sum_*dt_avg
         
         # Part 4: Log your errors
-        self.logger.log_values( [latest_error, error_dot, error_int, Time.from_msg(stamp).nanoseconds] )
+        self.logger.log_values( [latest_error, error_dot, error_int, stamp] )
         
         # Part 4: Implement the control law of P-controller
         if self.type == P:
