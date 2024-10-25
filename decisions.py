@@ -37,26 +37,23 @@ class decision_maker(Node):
         # TODO Part 5: Tune your parameters here
     
         if motion_type == POINT_PLANNER:
-            self.controller=controller(klp=0.5, kap=1.0, controller_type=0) # P
+            # self.controller=controller(klp=0.5, kap=1.0, controller_type=0) # P
 
-            # self.controller=controller(klp=0.5, kli=1.0, kap=1.0, kai=1.0, controller_type=1) # PD
+            # self.controller=controller(klp=0.5, klv=1.0, kli=5.0, kap=1.0, kav=0.25, kai=1.0, controller_type=1) # PD
 
-            # self.controller=controller(klp=0.5, klv=1.0, kap=1.0, kav=1.0, controller_type=2) # PI
+            # self.controller=controller(klp=0.5, klv=1.0, kli=1.0, kap=1.0, kav=0.25, kai=0.2, controller_type=2) # PI
 
-            # self.controller=controller(klp=0.5, klv=1.0, kli=5.0, kap=1.0, kav=0.25, kai=1.0, controller_type=3) # PID
+            self.controller=controller(klp=0.5, klv=1.0, kli=1.0, kap=1.0, kav=0.25, kai=0.2, controller_type=3) # PID
 
 
             self.planner=planner(POINT_PLANNER)    
     
     
         elif motion_type==TRAJECTORY_PLANNER:
-            # self.controller=trajectoryController(klp=0.2, kap=1.0, controller_type=0) # P
-
-            # self.controller=trajectoryController(klp=0.5, kli=1.0, kap=1.0, kai=1.0, controller_type=1) # PD
-
-            # self.controller=trajectoryController(klp=0.5, klv=1.0, kap=1.0, kav=1.0, controller_type=2) # PI
-
-            self.controller=trajectoryController(klp=0.5, klv=1.0, kli=5.0, kap=1.0, kav=0.25, kai=1.0, controller_type=3) # PID
+            # PARABOLA
+            # self.controller=trajectoryController(klp=0.5, klv=1.0, kli=1.0, kap=1.3, kav=0.3, kai=1.0, controller_type=3) # PID
+            # SIGMOID
+            self.controller=trajectoryController(klp=0.4, klv=0.3, kli=0.3, kap=1.1, kav=1.5, kai=1.0, controller_type=3) # PID
 
             self.planner=planner(TRAJECTORY_PLANNER)
 
@@ -68,7 +65,7 @@ class decision_maker(Node):
         self.localizer=localization(rawSensor)
 
         # Instantiate the planner
-        self.goal=self.planner.plan(goal_point)
+        self.goal=self.planner.plan()
 
         # Error thresholds for evaluating if goal is reached
         self.linear_threshold = 0.1 # m
