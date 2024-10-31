@@ -3,6 +3,7 @@ import numpy as np
 
 POINT_PLANNER=0; TRAJECTORY_PLANNER=1
 
+# Type of trajectory
 PARABOLA_TRAJECTORY=0; SIGMOID_TRAJECTORY=1
 
 class planner:
@@ -10,7 +11,7 @@ class planner:
 
         self.type=type_
         self.trajectoryType = SIGMOID_TRAJECTORY
-        self.simulation = False
+        self.simulation = False # Set to True if running in simulation
 
     def plan(self, goalPoint=[-1.0, -1.0]):
         # NOTE: goalPoint is used only for the pointPlanner
@@ -30,7 +31,7 @@ class planner:
         return x, y
 
     # Part 6: Implement the trajectories here
-    # Sigmoid
+    # Generate sigmoid trajectory using given equation
     def sigmoid_trajectory_planner(self):
         if self.simulation:
             starting_x = -2
@@ -47,7 +48,7 @@ class planner:
         return trajectory_points
 
 
-    # parabola
+    # Generate parabola trajectory using given equation
     def parabola_trajectory_planner(self):
         if self.simulation:
             starting_x = -2

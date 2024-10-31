@@ -2,7 +2,7 @@ import matplotlib.pyplot as plt
 from utilities import FileReader
 import numpy as np
 
-
+# This function returns x and y values for the parabola trajectory
 def parabola_trajectory_planner():
     # Robot in sim starts off at these coordinates so it was required
     starting_x = 0 # set to 0 for real
@@ -16,6 +16,7 @@ def parabola_trajectory_planner():
         y_values.append(y)
     return x_values, y_values
 
+# This function returns x and y values for the sigmoid trajectory
 def sigmoid_trajectory_planner():
     # Robot in sim starts off at these coordinates so it was required
     starting_x = 0 # set to 0 for real
@@ -29,6 +30,8 @@ def sigmoid_trajectory_planner():
         y_values.append(y)
     return x_values, y_values
 
+# This file does 4 subplots at once, but you have to provide all 3 files to the python script when you run it
+# There are if statements inside to handle each file appropriately
 def plot_errors(filename):
     
     headers, values=FileReader(filename).read_file()

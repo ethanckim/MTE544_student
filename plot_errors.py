@@ -1,7 +1,7 @@
 import matplotlib.pyplot as plt
 from utilities import FileReader
-import numpy as np
 
+# This function does the plotting for the trajectory planner
 def plot_errors(filename):
     
     headers, values=FileReader(filename).read_file()
