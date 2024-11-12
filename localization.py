@@ -92,7 +92,7 @@ class localization(Node):
         # Get the estimate
         xhat=self.kf.get_states()
 
-        kf_x, kf_y, kf_th, kf_w, kf_v, kf_ax=self.x
+        kf_x, kf_y, kf_th, kf_w, kf_v, kf_ax=xhat
         kf_ay = kf_v * kf_w # As per tutorial
         kf_vx = kf_v * np.cos(kf_th) # get x component of velocity
 
