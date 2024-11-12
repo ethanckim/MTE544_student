@@ -8,7 +8,7 @@ from utilities import euler_from_quaternion, calculate_angular_error, calculate_
 from rclpy.node import Node
 from geometry_msgs.msg import Twist
 
-from rclpy.qos import QoSProfile
+from rclpy.qos import QoSProfile, QoSReliabilityPolicy, QoSDurabilityPolicy, QoSHistoryPolicy
 from nav_msgs.msg import Odometry as odom
 
 from sensor_msgs.msg import Imu
@@ -22,6 +22,7 @@ import message_filters
 rawSensors=0
 kalmanFilter=1
 odom_qos=QoSProfile(reliability=2, durability=2, history=1, depth=10)
+imu_qos=QoSProfile(reliability=2, durability=2, history=1, depth=10) # TODO: Update vals of this QoSProfile
 
 class localization(Node):
     
@@ -45,21 +46,24 @@ class localization(Node):
         
     def initKalmanfilter(self, dt):
         
-        # TODO Part 3: Set up the quantities for the EKF (hint: you will need the functions for the states and measurements)
+        # Part 3: Set up the quantities for the EKF (hint: you will need the functions for the states and measurements)
         
-        x= ...
-        
-        Q= ...
+        x = np.array([0,0,0,0,0,0]) # initial state of 0s
 
-        R= ...
-        
-        P= ... # initial covariance
+        # Initialize Q to diagonal matrix with 0.5 (as per the lab manual)
+        Q = np.diag([0.5] * 6)
+
+        # Initialize R to diagonal matrix with 0.5 (as per the lab manual)
+        R = np.diag([0.5] * 4)
+
+        # Initialize P (state covariance matrix) to Q (as per the tutorial)
+        P = np.diag([0.5] * 6)
         
         self.kf=kalman_filter(P,Q,R, x, dt)
         
         # TODO Part 3: Use the odometry and IMU data for the EKF
-        self.odom_sub=message_filters.Subscriber(...)
-        self.imu_sub=message_filters.Subscriber(...)
+        self.odom_sub=message_filters.Subscriber(self, odom, "/odom", qos_profile=odom_qos)
+        self.imu_sub=message_filters.Subscriber(self, Imu, "/imu", qos_profile=imu_qos)
         
         time_syncher=message_filters.ApproximateTimeSynchronizer([self.odom_sub, self.imu_sub], queue_size=10, slop=0.1)
         time_syncher.registerCallback(self.fusion_callback)
