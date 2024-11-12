@@ -7,7 +7,7 @@ PD=1 # proportional and derivative
 PI=2 # proportional and integral
 PID=3 # proportional, integral, derivative
 
-# For the TODO items in this file, you can utilize your implementation from LAB-2 (if it was properly implemented)
+# For the items in this file, you can utilize your implementation from LAB-2 (if it was properly implemented)
 class PID_ctrl:
     
     def __init__(self, type_, kp=1.2,kv=0.8,ki=0.2, history_length=3, filename_="errors.csv"):
