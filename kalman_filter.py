@@ -16,7 +16,7 @@ class kalman_filter:
     def predict(self):
 
         # Update the state transition and measurement matrices with corresponding Jacobians
-        # Note I renamed variables to match lecture notation
+        # Note variables are renamed to match lecture notation
         self.G = self.jacobian_G()
         self.H = self.jacobian_H()
 

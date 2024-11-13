@@ -8,7 +8,7 @@ from utilities import euler_from_quaternion, calculate_angular_error, calculate_
 from rclpy.node import Node
 from geometry_msgs.msg import Twist
 
-from rclpy.qos import QoSProfile
+from rclpy.qos import QoSProfile, QoSReliabilityPolicy, QoSDurabilityPolicy, QoSHistoryPolicy
 from nav_msgs.msg import Odometry as odom
 
 from sensor_msgs.msg import Imu
@@ -21,8 +21,8 @@ import message_filters
 
 rawSensors=0
 kalmanFilter=1
-odom_qos=QoSProfile(reliability=2, durability=2, history=1, depth=10)
-imu_qos=QoSProfile(reliability=2, durability=2, history=1, depth=10) # TODO: Update vals of this QoSProfile if needed
+odom_qos=QoSProfile(reliability=QoSReliabilityPolicy.BEST_EFFORT, durability=QoSDurabilityPolicy.VOLATILE, history=QoSHistoryPolicy.KEEP_LAST, depth=10)
+imu_qos=QoSProfile(reliability=QoSReliabilityPolicy.BEST_EFFORT, durability=QoSDurabilityPolicy.VOLATILE, history=QoSHistoryPolicy.KEEP_LAST, depth=10)
 
 class localization(Node):
     
@@ -96,7 +96,7 @@ class localization(Node):
 
         kf_x, kf_y, kf_th, kf_w, kf_v, kf_ax=xhat
         kf_ay = kf_v * kf_w # As per tutorial
-        kf_vx = kf_v * np.cos(kf_th) # get x component of velocity
+        kf_vx = kf_v # linear velocity is robot's x direction velocity
 
         # Update the pose estimate to be returned by getPose
         self.pose=np.array([kf_x, kf_y, kf_th, stamp])
