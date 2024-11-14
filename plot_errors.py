@@ -28,7 +28,7 @@ def plot_ground_truth(ax):
         y_path.append(y)
 
     # Plot the path
-    ax.plot(x_path, y_path)
+    ax.plot(x_path, y_path, label="ground truth")
 
 
 def plot_errors(filename):
@@ -47,7 +47,7 @@ def plot_errors(filename):
     fig, axes = plt.subplots(2,1, figsize=(14,6))
 
 
-    axes[0].plot([lin[len(headers) - 3] for lin in values], [lin[len(headers) - 2] for lin in values])
+    axes[0].plot([lin[len(headers) - 3] for lin in values], [lin[len(headers) - 2] for lin in values], label="kalman filter")
     plot_ground_truth(axes[0])
     axes[0].set_title("state space")
     axes[0].grid()
