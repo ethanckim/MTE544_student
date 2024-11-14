@@ -51,6 +51,7 @@ def plot_errors(filename):
     plot_ground_truth(axes[0])
     axes[0].set_title("state space")
     axes[0].grid()
+    axes[0].legend()
     axes[0].axis('equal')
 
     
