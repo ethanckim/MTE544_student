@@ -1,7 +1,34 @@
 import matplotlib.pyplot as plt
 from utilities import FileReader
+import numpy as np
 
+def plot_ground_truth(ax):
+    # Parameters
+    dt = 0.1  # Time step
+    total_time = 15  # Total simulation time
+    linear_velocity = 0.0
+    angular_velocity = 1.0
+    max_linear_velocity = 1.0
 
+    # Initialize position and orientation
+    x, y, theta = 0.0, 0.0, 0.0
+
+    # Lists to store the path
+    x_path = [x]
+    y_path = [y]
+
+    # Simulate the motion
+    for t in np.arange(0, total_time, dt):
+        linear_velocity += 0.01 if linear_velocity < max_linear_velocity else 0.0
+        x += linear_velocity * np.cos(theta) * dt
+        y += linear_velocity * np.sin(theta) * dt
+        theta += angular_velocity * dt
+
+        x_path.append(x)
+        y_path.append(y)
+
+    # Plot the path
+    ax.plot(x_path, y_path)
 
 
 def plot_errors(filename):
@@ -21,8 +48,10 @@ def plot_errors(filename):
 
 
     axes[0].plot([lin[len(headers) - 3] for lin in values], [lin[len(headers) - 2] for lin in values])
+    plot_ground_truth(axes[0])
     axes[0].set_title("state space")
     axes[0].grid()
+    axes[0].axis('equal')
 
     
     axes[1].set_title("each individual state")
