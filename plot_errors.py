@@ -2,34 +2,6 @@ import matplotlib.pyplot as plt
 from utilities import FileReader
 import numpy as np
 
-def plot_ground_truth(ax):
-    # Parameters
-    dt = 0.1  # Time step
-    total_time = 15  # Total simulation time
-    linear_velocity = 0.0
-    angular_velocity = 1.0
-    max_linear_velocity = 1.0
-
-    # Initialize position and orientation
-    x, y, theta = 0.0, 0.0, 0.0
-
-    # Lists to store the path
-    x_path = [x]
-    y_path = [y]
-
-    # Simulate the motion
-    for t in np.arange(0, total_time, dt):
-        linear_velocity += 0.01 if linear_velocity < max_linear_velocity else 0.0
-        x += linear_velocity * np.cos(theta) * dt
-        y += linear_velocity * np.sin(theta) * dt
-        theta += angular_velocity * dt
-
-        x_path.append(x)
-        y_path.append(y)
-
-    # Plot the path
-    ax.plot(x_path, y_path, label="ground truth")
-
 
 def plot_errors(filename):
     
@@ -42,32 +14,19 @@ def plot_errors(filename):
     for val in values:
         time_list.append(val[-1] - first_stamp)
 
+
+    if filename == 'robotPose.csv':
+        axes[0].plot([lin[len(headers) - 3] for lin in values], [lin[len(headers) - 2] for lin in values], label="Kalman Filter")
+
+        labels = ["imu_ax (m/s^2)", "imu_ay (m/s^2)", "kf_ax (m/s^2)", "kf_ay (m/s^2)", "kf_vx (m/s)", "kf_w (rad/s)", "kf_x (m)", "kf_y (m)"]
+
+        for i in range(0, len(headers) - 1):
+            axes[1].plot(time_list, [lin[i] for lin in values], label= labels[i])
+        
+
+    if filename == 'odom_pose.csv':
+        axes[0].plot([lin[0] for lin in values], [lin[1] for lin in values], label="Odom")
     
-    
-    fig, axes = plt.subplots(2,1, figsize=(14,6))
-
-
-    axes[0].plot([lin[len(headers) - 3] for lin in values], [lin[len(headers) - 2] for lin in values], label="kalman filter")
-    plot_ground_truth(axes[0])
-    axes[0].set_title("state space")
-    axes[0].grid()
-    axes[0].legend()
-    axes[0].axis('equal')
-
-    
-    axes[1].set_title("each individual state")
-    for i in range(0, len(headers) - 1):
-        axes[1].plot(time_list, [lin[i] for lin in values], label= headers[i])
-
-    axes[1].legend()
-    axes[1].grid()
-
-    plt.show()
-    
-    
-
-
-
 
 
 import argparse
@@ -81,8 +40,33 @@ if __name__=="__main__":
     
     print("plotting the files", args.files)
 
+    fig, axes = plt.subplots(2,1, figsize=(10,10))
+
+
+
     filenames=args.files
     for filename in filenames:
         plot_errors(filename)
 
+    axes[0].set_title("State Space (X vs Y - 2D Birds Eye View)")
+    axes[0].grid()
+    axes[0].legend()
+    axes[0].set_xlabel("x (m)")
+    axes[0].set_ylabel("y (m)")
+    # axes[0].set_xlabel("k_x (m)")
+    # axes[0].set_ylabel("k_y (m)")
+    axes[0].axis('equal')
+    axes[0].set_aspect('equal', adjustable='box')
+    axes[0].relim()  # Recompute the data limits
+
+    axes[1].set_title("Kalman Filter - States vs Time")
+    axes[1].legend()
+    axes[1].set_xlabel("Time (s)")
+    axes[1].set_ylabel("State")
+    axes[1].grid()
+
+    plt.suptitle("EKF Results - Q = 0.5, R = 2.5")
+    # plt.suptitle("Point Planner EKF Results - Q = 0.5, R = 0.1")
+
+    plt.show()
 
