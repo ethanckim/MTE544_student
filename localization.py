@@ -71,11 +71,11 @@ class localization(Node):
                         0,
                         0])        
             
-            # TODO PART 5 Bonus put the Q and R matrices
+            # PART 5 Bonus put the Q and R matrices
             # that you conclude from lab Three
-            Q=...
-            R=...
-            P=...
+            Q = np.diag([0.5] * 6)
+            R = np.diag([0.1] * 4)
+            P = np.diag([0.5] * 6)
                         
             self.kf=kalman_filter(P,Q,R, x)
             
@@ -86,21 +86,34 @@ class localization(Node):
 
         self.timelast=time.time()
 
+        vx = odom_msg.twist.twist.linear.x
+        w = odom_msg.twist.twist.angular.z
 
-        z=np.array([odom_msg.twist.twist.linear.x,
-                    odom_msg.twist.twist.angular.z,
-                    imu_msg.linear_acceleration.x,
-                    imu_msg.linear_acceleration.y])
+        ax = imu_msg.linear_acceleration.x
+        ay = imu_msg.linear_acceleration.y
+
+        z=np.array([vx,
+                    w,
+                    ax,
+                    ay])
         
         self.kf.predict(dt)
         self.kf.update(z)
         
         xhat=self.kf.get_states()
-        
-        self.pose=np.array([xhat[0],
-                            xhat[1],
-                            normalize_angle(xhat[2]),
+
+        kf_x, kf_y, kf_th, kf_w, kf_v, kf_ax=xhat
+        kf_ay = kf_v * kf_w # As per tutorial
+        kf_vx = kf_v # linear velocity is robot's x direction velocity
+
+        self.pose=np.array([kf_x,
+                            kf_y,
+                            normalize_angle(kf_th),
                             odom_msg.header.stamp])
+
+        stamp = Time.from_msg(odom_msg.header.stamp).nanoseconds / 1e9
+
+        self.loc_logger.log_values([ax, ay, kf_ax, kf_ay, kf_vx, kf_w, kf_x, kf_y, stamp])
         
     def odom_callback(self, pose_msg):
         
