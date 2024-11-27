@@ -57,7 +57,9 @@ class decision_maker(Node):
         
         elif motion_type==TRAJECTORY_PLANNER:
             # PART 5 Bonus Put the gains that you conclude from lab 2
-            self.controller=trajectoryController(klp=0.5, klv=1.0, kli=1.0, kap=1.0, kav=0.25, kai=0.2)
+            # TODO: Tune PID values if necessary here in lab - e.g. because we might be using a diff robot than before
+            # self.controller=trajectoryController(klp=0.5, klv=1.0, kli=1.0, kap=1.0, kav=0.25, kai=0.2) # Use these vals in lab
+            self.controller = trajectoryController(klp=0.5, klv=1.0, kli=5.0, kap=1.0, kav=0.25, kai=1.0) # use these vals in sim
             self.planner=planner(TRAJECTORY_PLANNER)
         
         else:

@@ -164,7 +164,7 @@ def search(maze, start, end):
             node_position = (current_node.position[0] + move[0], current_node.position[1] + move[1])
 
             # PART 4 Make sure within range (check if within maze boundary)
-            if not (0 <= node_position[0] < no_columns and 0 <= node_position[1] < no_rows):
+            if not (0 <= node_position[0] < no_rows and 0 <= node_position[1] < no_columns):
                 continue
 
             # Make sure walkable terrain
