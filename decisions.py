@@ -43,7 +43,7 @@ class decision_maker(Node):
         publishing_period=1/rate
 
         # PART 5 choose your threshold
-        self.reachThreshold=0.1
+        self.reachThreshold=0.1 # TODO: Tune this value in lab if needed
 
         # PART 5 your localization type
         self.localizer=localization(type=kalmanFilter)
