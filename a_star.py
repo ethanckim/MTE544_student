@@ -93,23 +93,23 @@ def search(maze, start, end):
     outer_iterations = 0
     max_iterations = (len(maze) // 2) ** 10
 
-    # TODO PART 4 what squares do we search . search movement is left-right-top-bottom
+    # PART 4 what squares do we search . search movement is left-right-top-bottom
     # (4 or 8 movements) from every positon
     move_list = \
-            [[0, -1],  # go up
-            [-1, 0],  # go left
-            [0, 1],  # go down
-            [1, 0],  # go right
+            [[-1, 0],   # go up
+            [0, -1],   # go left
+            [1, 0],    # go down
+            [0, 1],    # go right
             [-1, -1],  # go up left
-            [-1, 1],  # go down left
-            [1, -1],  # go up right
-            [1, 1]]  # go down right
+            [1, -1],   # go down left
+            [-1, 1],   # go up right
+            [1, 1]]    # go down right
 
     """
         1) We first get the current node by comparing all f cost and selecting the lowest cost node for further expansion
         2) Check max iteration reached or not . Set a message and stop execution
         3) Remove the selected node from yet_to_visit dict and add this node to visited dict
-        4) Perofmr Goal test and return the path else perform below steps
+        4) Perform Goal test and return the path else perform below steps
         5) For selected node find out all children (use move to find children)
             a) get the current postion for the selected node (this becomes parent node for the children)
             b) check if a valid position exist (boundary will make few nodes invalid)
