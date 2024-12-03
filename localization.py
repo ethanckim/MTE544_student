@@ -29,8 +29,8 @@ odom_qos=QoSProfile(reliability=2, durability=2, history=1, depth=10)
 
 class localization(Node):
     
-    def __init__(self, type, loggerName="robotPose.csv", loggerHeaders=["imu_ax", "imu_ay", "kf_ax", "kf_ay","kf_vx","kf_w","kf_x", "kf_y","stamp"]):
-
+    def __init__(self, type, loggerName="robotPose.csv", loggerHeaders=["imu_ax", "imu_ay", "kf_ax", "kf_ay","kf_vx","kf_w","kf_x", "kf_y","odom_x", "odom_y", "odom_th", "stamp"]):
+    # def __init__(self, type, loggerName="robotPose.csv", loggerHeaders=["odom_x", "odom_y", "odom_th", "stamp"]):
         super().__init__("localizer")
         
         
@@ -113,7 +113,11 @@ class localization(Node):
 
         stamp = Time.from_msg(odom_msg.header.stamp).nanoseconds / 1e9
 
-        self.loc_logger.log_values([ax, ay, kf_ax, kf_ay, kf_vx, kf_w, kf_x, kf_y, stamp])
+        odom_x = odom_msg.pose.pose.position.x
+        odom_y = odom_msg.pose.pose.position.y
+        odom_th = euler_from_quaternion(odom_msg.pose.pose.orientation)
+
+        self.loc_logger.log_values([ax, ay, kf_ax, kf_ay, kf_vx, kf_w, kf_x, kf_y, odom_x, odom_y, odom_th, stamp])
         
     def odom_callback(self, pose_msg):
         
