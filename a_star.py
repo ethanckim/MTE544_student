@@ -2,6 +2,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 from math import sqrt
 
+# Comment/uncomment as needed to change the heuristic used
 HEURISTIC = "euclidian"
 # HEURISTIC = "manhattan"
 
@@ -164,6 +165,7 @@ def search(maze, start, end):
             node_position = (current_node.position[0] + move[0], current_node.position[1] + move[1])
 
             # PART 4 Make sure within range (check if within maze boundary)
+            # note that the maze is transposed
             if not (0 <= node_position[0] < no_rows and 0 <= node_position[1] < no_columns):
                 continue
 
@@ -186,8 +188,10 @@ def search(maze, start, end):
                 continue
 
             # PART 4 Create the f, g, and h values
+            # note we ALWAYS euclidian distance for cost, even when using manhattan heuristic - the cost is the same, but the heuristic is different
             child.g = current_node.g + compute_euclidian_distance(current_node.position, child.position)
-            # Heuristic costs calculated here, this is using euclidean distance
+
+            # Heuristic costs calculated here using function we implemented
             child.h = heuristic_function(child.position, end_node.position)
 
             child.f = child.g + child.h

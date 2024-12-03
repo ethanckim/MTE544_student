@@ -28,9 +28,9 @@ odom_qos=QoSProfile(reliability=2, durability=2, history=1, depth=10)
 
 
 class localization(Node):
-    
+
+    # modify the logger headers here to include odom data
     def __init__(self, type, loggerName="robotPose.csv", loggerHeaders=["imu_ax", "imu_ay", "kf_ax", "kf_ay","kf_vx","kf_w","kf_x", "kf_y","odom_x", "odom_y", "odom_th", "stamp"]):
-    # def __init__(self, type, loggerName="robotPose.csv", loggerHeaders=["odom_x", "odom_y", "odom_th", "stamp"]):
         super().__init__("localizer")
         
         
@@ -117,6 +117,7 @@ class localization(Node):
         odom_y = odom_msg.pose.pose.position.y
         odom_th = euler_from_quaternion(odom_msg.pose.pose.orientation)
 
+        # logging all data from lab 3 plus odom data
         self.loc_logger.log_values([ax, ay, kf_ax, kf_ay, kf_vx, kf_w, kf_x, kf_y, odom_x, odom_y, odom_th, stamp])
         
     def odom_callback(self, pose_msg):
