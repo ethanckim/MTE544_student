@@ -28,10 +28,10 @@ class planner:
     def initTrajectoryPlanner(self):
 
 
-        # TODO PART 5 Create the cost-map, the laser_sig is 
-        # the standard deviation for the gausiian for which
+        # PART 5 Create the cost-map, the laser_sig is
+        # the standard deviation for the gaussian for which
         # the mean is located on the occupant grid. 
-        self.m_utilites=mapManipulator(laser_sig=...)
+        self.m_utilites=mapManipulator(laser_sig=0.5) # TODO: May need to tune this value in lab
             
         self.costMap=self.m_utilites.make_likelihood_field()
         
@@ -47,14 +47,17 @@ class planner:
         startPose=self.m_utilites.position_2_cell(startPoseCart)
         endPose=self.m_utilites.position_2_cell(endPoseCart)
         
-        # TODO PART 5 convert the cell pixels into the cartesian coordinates
-        
-        Path = list(map(...))
+        # PART 5 convert the cell pixels into the cartesian coordinates
+
+        Path = search(self.costMap, startPose, endPose)
+
+        # use cell_2_position to convert the path into the cartesian coordinates
+        Path = list(map(self.m_utilites.cell_2_position, Path))
 
 
 
-        # TODO PART 5 return the path as list of [x,y]
-        return ...
+        # PART 5 return the path as list of [x,y]
+        return Path
 
 
 

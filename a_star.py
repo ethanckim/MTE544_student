@@ -2,6 +2,9 @@ import numpy as np
 import matplotlib.pyplot as plt
 from math import sqrt
 
+HEURISTIC = "euclidian"
+# HEURISTIC = "manhattan"
+
 
 class Node:
     """
@@ -62,50 +65,51 @@ def search(maze, start, end):
         :return:
     """
 
-    # TODO PART 4 Create start and end node with initized values for g, h and f
+    # PART 4 Create start and end node with initized values for g, h and f
     # Use None as parent if not defined
-    start_node = Node(...)
-    start_node.g = ...     # cost from start Node
-    start_node.h = ...     # heuristic estimated cost to end Node
-    start_node.f = ...
+    start_node = Node(None, start)
+    start_node.g = 0     # cost from start Node
+    start_node.h = heuristic_function(start, end)     # heuristic estimated cost to end Node
+    start_node.f = start_node.g + start_node.h
 
-    end_node = Node(...)
-    end_node.g = ...       # set a large value if not defined
-    end_node.h = ...       # heuristic estimated cost to end Node
-    end_node.f = ...
+    end_node = Node(None, end)
+    end_node.g = float('inf')       # set a large value if not defined
+    end_node.h = 0       # heuristic estimated cost to end Node
+    end_node.f = end_node.g + end_node.h
 
     # Initialize both yet_to_visit and visited dictionary
     # in this dict we will put all node that are yet_to_visit for exploration.
     # From here we will find the lowest cost node to expand next
-    yet_to_visit_dict = {}  # key is the position (tuple), value is the node
+    open_nodes_dict = {}  # key is the position (tuple), value is the node
     # in this list we will put all node those already explored so that we don't explore it again
     # key is the position (tuple), value is True (boolean)
-    visited_dict = {}
+    closed_nodes_dict = {}
 
     # Add the start node
-    yet_to_visit_dict[start_node.position] = start_node
+    open_nodes_dict[start_node.position] = start_node
 
     # Adding a stop condition. This is to avoid any infinite loop and stop
     # execution after some reasonable number of steps
     outer_iterations = 0
     max_iterations = (len(maze) // 2) ** 10
 
-    # TODO PART 4 what squares do we search . serarch movement is left-right-top-bottom
+    # PART 4 what squares do we search . search movement is left-right-top-bottom
     # (4 or 8 movements) from every positon
-    move = [[...],  # go up
-            [...],  # go left
-            [...],  # go down
-            [...],  # go right
-            [...],  # go up left
-            [...],  # go down left
-            [...],  # go up right
-            [...]]  # go down right
+    move_list = \
+            [[-1, 0],   # go up
+            [0, -1],   # go left
+            [1, 0],    # go down
+            [0, 1],    # go right
+            [-1, -1],  # go up left
+            [1, -1],   # go down left
+            [-1, 1],   # go up right
+            [1, 1]]    # go down right
 
     """
         1) We first get the current node by comparing all f cost and selecting the lowest cost node for further expansion
         2) Check max iteration reached or not . Set a message and stop execution
         3) Remove the selected node from yet_to_visit dict and add this node to visited dict
-        4) Perofmr Goal test and return the path else perform below steps
+        4) Perform Goal test and return the path else perform below steps
         5) For selected node find out all children (use move to find children)
             a) get the current postion for the selected node (this becomes parent node for the children)
             b) check if a valid position exist (boundary will make few nodes invalid)
@@ -118,12 +122,12 @@ def search(maze, start, end):
                 c) if child in yet_to_visit dict then ignore it
                 d) else move the child to yet_to_visit dict
     """
-    # TODO PART 4 find maze has got how many rows and columns
-    no_rows, no_columns = ...
+    # PART 4 find maze has got how many rows and columns
+    no_rows, no_columns = np.shape(maze)
 
     # Loop until you find the end
 
-    while len(yet_to_visit_dict) > 0:
+    while len(open_nodes_dict) > 0:
 
         # Every time any node is referred from yet_to_visit list, counter of limit operation incremented
         outer_iterations += 1
@@ -131,7 +135,7 @@ def search(maze, start, end):
         # Get the current node with the lowest f value
         current_node = None
         current_fscore = None
-        for position, node in yet_to_visit_dict.items():
+        for position, node in open_nodes_dict.items():
             if current_fscore is None or node.f < current_fscore:
                 current_fscore = node.f
                 current_node = node
@@ -143,8 +147,8 @@ def search(maze, start, end):
             return return_path(current_node, maze)
 
         # Pop current node out off yet_to_visit dict, add to visited list
-        yet_to_visit_dict.pop(current_node.position)
-        visited_dict[current_node.position] = True
+        open_nodes_dict.pop(current_node.position)
+        closed_nodes_dict[current_node.position] = True
 
         # test if goal is reached or not, if yes then return the path
         if current_node == end_node:
@@ -154,13 +158,13 @@ def search(maze, start, end):
         # Generate children from all adjacent squares
         children = []
 
-        for new_position in move:
+        for move in move_list:
 
-            # TODO PART 4 Get node position
-            node_position = (...)
+            # PART 4 Get node position
+            node_position = (current_node.position[0] + move[0], current_node.position[1] + move[1])
 
-            # TODO PART 4 Make sure within range (check if within maze boundary)
-            if (...):
+            # PART 4 Make sure within range (check if within maze boundary)
+            if not (0 <= node_position[0] < no_rows and 0 <= node_position[1] < no_columns):
                 continue
 
             # Make sure walkable terrain
@@ -177,22 +181,56 @@ def search(maze, start, end):
 
         for child in children:
 
-            # TODO PART 4 Child is on the visited dict (use get method to check if child is in visited dict, if not found then default value is False)
-            if ():
+            # PART 4 Child is on the visited dict (use get method to check if child is in visited dict, if not found then default value is False)
+            if closed_nodes_dict.get(child.position, False):
                 continue
 
-            # TODO PART 4 Create the f, g, and h values
-            child.g = ...
-            # Heuristic costs calculated here, this is using eucledian distance
-            child.h = ...
+            # PART 4 Create the f, g, and h values
+            child.g = current_node.g + compute_euclidian_distance(current_node.position, child.position)
+            # Heuristic costs calculated here, this is using euclidean distance
+            child.h = heuristic_function(child.position, end_node.position)
 
             child.f = child.g + child.h
 
             # Child is already in the yet_to_visit list and g cost is already lower
-            child_node_in_yet_to_visit = yet_to_visit_dict.get(
+            child_node_in_yet_to_visit = open_nodes_dict.get(
                 child.position, False)
             if (child_node_in_yet_to_visit is not False) and (child.g >= child_node_in_yet_to_visit.g):
                 continue
 
             # Add the child to the yet_to_visit list
-            yet_to_visit_dict[child.position] = child
+            open_nodes_dict[child.position] = child
+
+
+def compute_euclidian_distance(start, end):
+    """
+    Compute the euclidian distance between two points
+    :param start: start point as a tuple
+    :param end: end point as a tuple
+    :return: euclidian distance between the two points
+    """
+    return np.linalg.norm(np.array(start) - np.array(end))
+
+
+def compute_manhattan_distance(start, end):
+    """
+    Compute the manhattan distance between two points
+    :param start: start point as a tuple
+    :param end: end point as a tuple
+    :return: manhattan distance between the two points
+    """
+    return abs(start[0] - end[0]) + abs(start[1] - end[1])
+
+
+def heuristic_function(start, end):
+    """
+    Compute the heuristic function between two points
+    :param start: start point as a tuple
+    :param end: end point as a tuple
+    :return: heuristic function value between the two points
+    """
+
+    if HEURISTIC == "euclidian":
+        return compute_euclidian_distance(start, end)
+    else:
+        return compute_manhattan_distance(start, end)
