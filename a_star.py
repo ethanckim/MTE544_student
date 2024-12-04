@@ -81,13 +81,13 @@ def search(maze, start, end):
     # Initialize both yet_to_visit and visited dictionary
     # in this dict we will put all node that are yet_to_visit for exploration.
     # From here we will find the lowest cost node to expand next
-    open_nodes_dict = {}  # key is the position (tuple), value is the node
+    yet_to_visit = {}  # key is the position (tuple), value is the node
     # in this list we will put all node those already explored so that we don't explore it again
     # key is the position (tuple), value is True (boolean)
     closed_nodes_dict = {}
 
     # Add the start node
-    open_nodes_dict[start_node.position] = start_node
+    yet_to_visit[start_node.position] = start_node
 
     # Adding a stop condition. This is to avoid any infinite loop and stop
     # execution after some reasonable number of steps
@@ -95,7 +95,7 @@ def search(maze, start, end):
     max_iterations = (len(maze) // 2) ** 10
 
     # PART 4 what squares do we search . search movement is left-right-top-bottom
-    # (4 or 8 movements) from every positon
+    # we chose to do all 8 movements, note that the maze is transposed hence why the moves seem swapped
     move_list = \
             [[-1, 0],   # go up
             [0, -1],   # go left
@@ -128,7 +128,7 @@ def search(maze, start, end):
 
     # Loop until you find the end
 
-    while len(open_nodes_dict) > 0:
+    while len(yet_to_visit) > 0:
 
         # Every time any node is referred from yet_to_visit list, counter of limit operation incremented
         outer_iterations += 1
@@ -136,7 +136,7 @@ def search(maze, start, end):
         # Get the current node with the lowest f value
         current_node = None
         current_fscore = None
-        for position, node in open_nodes_dict.items():
+        for position, node in yet_to_visit.items():
             if current_fscore is None or node.f < current_fscore:
                 current_fscore = node.f
                 current_node = node
@@ -148,7 +148,7 @@ def search(maze, start, end):
             return return_path(current_node, maze)
 
         # Pop current node out off yet_to_visit dict, add to visited list
-        open_nodes_dict.pop(current_node.position)
+        yet_to_visit.pop(current_node.position)
         closed_nodes_dict[current_node.position] = True
 
         # test if goal is reached or not, if yes then return the path
@@ -197,13 +197,13 @@ def search(maze, start, end):
             child.f = child.g + child.h
 
             # Child is already in the yet_to_visit list and g cost is already lower
-            child_node_in_yet_to_visit = open_nodes_dict.get(
+            child_node_in_yet_to_visit = yet_to_visit.get(
                 child.position, False)
             if (child_node_in_yet_to_visit is not False) and (child.g >= child_node_in_yet_to_visit.g):
                 continue
 
             # Add the child to the yet_to_visit list
-            open_nodes_dict[child.position] = child
+            yet_to_visit[child.position] = child
 
 
 def compute_euclidian_distance(start, end):

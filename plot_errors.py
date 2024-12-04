@@ -2,7 +2,7 @@ import matplotlib.pyplot as plt
 from utilities import FileReader
 import numpy as np
 
-def read_pgm(filename, x_offset=-60, y_offset=0):
+def read_pgm(filename):
     with open(filename, 'rb') as f:
         # Check if it's a PGM file
         header = f.readline().decode().strip()
@@ -18,7 +18,13 @@ def read_pgm(filename, x_offset=-60, y_offset=0):
         # Read width, height, and maximum gray value
         width, height = map(int, line.split())
 
+        f.readline()
+
         # Read the image data
+        # image_data = f.read()
+        # print(f"Read {len(image_data)} bytes of image data")
+        # print(f"Expected dimensions: {height}x{width} = {height * width} bytes")
+
         image_data = np.frombuffer(f.read(), dtype=np.uint8).reshape((height, width))
 
     return image_data
@@ -31,7 +37,7 @@ def plot_pgm_image():
     plt.imshow(image_array, cmap='gray')
 
 def plot_errors():
-    headers, values=FileReader("robotPoseGoal1Euc.csv").read_file()
+    headers, values=FileReader("robotPoseGoal2Euc.csv").read_file()
 
     # MAP RESOLUTION
     resolution = 0.05
@@ -56,7 +62,7 @@ def plot_errors():
     plt.plot(ekf_x, ekf_y, label="Euclidian EKF Localization")
     plt.plot(raw_x, raw_y, label="Euclidian Raw Sensor Localization")
 
-    headers, values=FileReader("robotPoseGoal1Man.csv").read_file()
+    headers, values=FileReader("robotPoseGoal2Man.csv").read_file()
 
     # Scale and shift the values
     ekf_y = [-lin[7] / resolution + y_off for lin in values]
@@ -76,12 +82,12 @@ def plot_errors():
 
     # Adjust x-axis tick labels to origin
     x_ticks = ax.get_xticks()
-    x_labels = [f"{tick - x_off:.1f}" for tick in x_ticks]
+    x_labels = [f"{((tick - x_off)*resolution):.1f}" for tick in x_ticks]
     ax.set_xticklabels(x_labels)
 
     # Adjust y-axis tick labels to origin
     y_ticks = ax.get_yticks()
-    y_labels = [f"{-(tick - y_off):.1f}" for tick in y_ticks]
+    y_labels = [f"{-(tick - y_off)*resolution:.1f}" for tick in y_ticks]
     ax.set_yticklabels(y_labels)
 
 if __name__=="__main__":
@@ -93,7 +99,7 @@ if __name__=="__main__":
     plot_pgm_image()
     plot_errors()
 
-    plt.title('Goal Pose 1 - Euclidian vs Manhattan Heuristic')
+    plt.title('Goal Pose 2 - Euclidian vs Manhattan Heuristic')
 
     # move the legend outside of the plot
     plt.legend(loc='center left', bbox_to_anchor=(1, 0.5))
@@ -103,7 +109,7 @@ if __name__=="__main__":
     plt.subplots_adjust(left=0.1)
     plt.grid()
 
-    plt.xlabel('X Position (scaled to map resolution)')
-    plt.ylabel('Y Position (scaled to map resolution)')
+    plt.xlabel('X Position (m)')
+    plt.ylabel('Y Position (m)')
 
     plt.show()
