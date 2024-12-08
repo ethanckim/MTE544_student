@@ -216,6 +216,68 @@ def search_PRM(points, prm, start, end):
 
     path_points = []
 
-    ...
+    yet_to_visit_dict = {} # will save the node, key is the node index (tuple)
+    visited_dict = {}      # only save the True values, key is the node index (tuple)
     
-    return path_points
+    # Add the start node
+    yet_to_visit_dict[start_node.position] = start_node
+    
+    # Loop until you find the end
+    while len(yet_to_visit_dict) > 0:
+
+        # Get the current node with the lowest f value
+        current_node = Node(None, None)
+        current_fscore = None
+        for node in yet_to_visit_dict.values():
+            if current_fscore is None or node.f < current_fscore:
+                current_fscore = node.f
+                current_node = node
+
+        # Pop current node out off yet_to_visit list, add to visited list
+        yet_to_visit_dict.pop(current_node.position)
+        visited_dict[current_node.position] = True
+
+        # test if goal is reached or not, if yes then return the path
+        if current_node.position == end_node.position:
+            print ("Goal reached")
+            path = []
+            while current_node is not None:
+                path.append(points[current_node.position])
+                current_node = current_node.parent
+            # Return reversed path as we need to show from start to end path
+            path = path[::-1]
+            return path
+
+        # Generate children
+        child_nodes: list[Node] = []
+        for new_idx in prm[current_node.position]:
+            # Create new node
+            new_node = Node(current_node, new_idx)
+            # Append
+            child_nodes.append(new_node)
+
+        # Loop through children
+        for child_node in child_nodes:
+
+            # Child is on the visited list (search entire visited list)
+            if visited_dict.get(child_node.position, False):
+                continue
+
+            # Get the map coordinates from node
+            # Note: nodes store the index for a coordinate in the points list
+            (cur_x, cur_y) = points[current_node.position]
+            (child_x, child_y) = points[child_node.position]
+
+            # Create the f, g, and h values
+            # For h, Heuristic cost is calculated using eucledian distance
+            child_node.g = current_node.g + sqrt(((child_x - cur_x) ** 2) + ((child_y - cur_y) ** 2))
+            child_node.h = sqrt(((child_x - end[0]) ** 2) + ((child_y - end[1]) ** 2)) 
+            child_node.f = child_node.g + child_node.h
+
+            # Child is already in the yet_to_visit list and g cost is already lower
+            child_node_in_yet_to_visit = yet_to_visit_dict.get(child_node.position, False)
+            if (child_node_in_yet_to_visit is not False) and (child_node.g >= child_node_in_yet_to_visit.g):
+                continue
+
+            # Add the child to the yet_to_visit list
+            yet_to_visit_dict[child_node.position] = child_node

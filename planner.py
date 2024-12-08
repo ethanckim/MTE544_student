@@ -1,3 +1,4 @@
+from utilities import Logger
 from mapUtilities import *
 from a_star import *
 from probabilistic_road_map import *
@@ -10,6 +11,9 @@ class planner:
 
         self.type=type_
         self.mapName=mapName
+        self.obstacle_logger=Logger("planner_obstacles.csv", ["obstacles_x", "obstacles_y"])
+        self.path_logger=Logger("planner_path.csv", ["path_x", "path_y"])
+        self.poses_logger=Logger("planner_poses.csv", ["startPose_x","startPose_y","endPose_x", "endPose_y"])
 
     
     def plan(self, startPose, endPose):
@@ -47,7 +51,19 @@ class planner:
         # [Part 3] TODO Use the PRM and search_PRM to generate the path
         # Hint: see the example of the ASTAR case below, there is no scaling factor for PRM
         if type == PRM_PLANNER:
-            ...
+            # Adjusting the robot radius rr affects the minimum distance between points when generating a PRM graph
+            rr = 0.25 # [m]
+
+            # Generate PRM graph and receive sample_points (turples) and the roadmap
+            sample_points, roadmap = prm_graph(startPose, endPose, self.obstaclesListCell, rr, m_utilities=self.m_utilities)
+
+            start_time = time.time()
+
+            # Search the PRM graph and determine the most optimal path using A*
+            path_ = search_PRM(sample_points, roadmap, startPose, endPose)
+
+            end_time = time.time()
+            print(f"the time took for a_star calculation was {end_time - start_time}")
 
         elif type == ASTAR_PLANNER: # This is the same planner you should have implemented for Lab4
             scale_factor = 4 # Depending on resolution, this can be smaller or larger
@@ -65,6 +81,13 @@ class planner:
             path_ = [[x*scale_factor, y*scale_factor] for x,y in path ]
 
         Path = np.array(list(map(self.m_utilities.cell_2_position, path_ )))
+
+        # Log path planning data
+        for obstacle in self.obstaclesList:
+            self.obstacle_logger.log_values([obstacle[0], obstacle[1]])
+        for waypoint in Path:
+            self.path_logger.log_values([waypoint[0], waypoint[1]])
+        self.poses_logger.log_values([startPoseCart[0], startPoseCart[1], endPoseCart[0], endPoseCart[1]])
 
         # Plot the generated path
         plt.plot(self.obstaclesList[:,0], self.obstaclesList[:,1], '.')
