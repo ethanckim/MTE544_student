@@ -82,6 +82,15 @@ class planner:
 
         Path = np.array(list(map(self.m_utilities.cell_2_position, path_ )))
 
+        # Calculate path length
+        prevPoint = Path[0]
+        pathLength = 0
+        for currPoint in Path:
+            pathLength += np.linalg.norm(np.array(prevPoint) - np.array(currPoint))
+            prevPoint = currPoint
+        print(f"The path length is {pathLength}")
+        print(f"Path has start point {startPoseCart} and end point {endPoseCart}")
+
         # Log path planning data
         for obstacle in self.obstaclesList:
             self.obstacle_logger.log_values([obstacle[0], obstacle[1]])

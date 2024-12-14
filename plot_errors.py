@@ -21,6 +21,10 @@ def plot_errors():
     for i in range(0, len(headers) - 1):
         plt.plot(time_list, [lin[i] for lin in values], label= headers[i]+ " linear")
 
+    plt.xlabel('Time [ns]')
+    plt.ylabel('State')
+    plt.title('Robot States vs Time')
+
     plt.legend()
     plt.grid()
 

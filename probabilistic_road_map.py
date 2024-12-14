@@ -92,40 +92,47 @@ def prm_graph(start, goal, obstacles_list, robot_radius, *, rng=None, m_utilitie
 
     if show_plot:
         print("Plotting PRM Graph...")
+        plt.figure(figsize=(5,5))
         if use_map:
+            rr = round(robot_radius * m_utilities.getResolution(), 2)
             # When using the map, first convert cells into positions, then plot (for a more intuitive visualization)
             # Plot the sample points
             samples_pos = np.array([m_utilities.cell_2_position([i, j]) for i, j in zip(sample_points[0], sample_points[1])])
             print(samples_pos)
             sample_x = samples_pos[:, 0]
             sample_y = samples_pos[:, 1]
-            plt.plot(sample_x, sample_y, ".b")   
+            plt.plot(sample_x, sample_y, ".b", label="sample points")   
             # Plot list of obstacles
             obs_pos = np.array([m_utilities.cell_2_position([i, j]) for i, j in zip(obstacles_list[:, 0], obstacles_list[:, 1])])
             obs_x = obs_pos[:, 0]
             obs_y = obs_pos[:, 1]
-            plt.plot(obs_x, obs_y, ".k")  
+            plt.plot(obs_x, obs_y, ".k", label="obstacles")  
             # Plot the roadmap
             plot_road_map(roadmap, [sample_x, sample_y])
             # Plot the starting position as a red marker
             s_pos = m_utilities.cell_2_position(start)
-            plt.plot(s_pos[0], s_pos[1], "^r")
+            plt.plot(s_pos[0], s_pos[1], "^r", label="start pose")
             # Plot the goal position as a green marker
             g_pos = m_utilities.cell_2_position(goal)
-            plt.plot(g_pos[0], g_pos[1], "^g")
+            plt.plot(g_pos[0], g_pos[1], "^g", label="goal pose")
         else:
+            rr = robot_radius
             # plot the sample points
-            plt.plot(sample_points[0], sample_points[1], ".b")   
+            plt.plot(sample_points[0], sample_points[1], ".b", label="sample points")   
             # Plot list of obstacles
-            plt.plot(obstacles_list[:,0], obstacles_list[:,1], ".k")  
+            plt.plot(obstacles_list[:,0], obstacles_list[:,1], ".k", label="obstacles")  
             # Plot the roadmap
             plot_road_map(roadmap, sample_points)
             # Plot the starting position as a red marker
-            plt.plot(start[0], start[1], "^r")
+            plt.plot(start[0], start[1], "^r", label="start pose")
             # Plot the goal position as a green marker
-            plt.plot(goal[0], goal[1], "^g")
+            plt.plot(goal[0], goal[1], "^g", label="goal pose")
         plt.grid(True)
         plt.axis("equal")
+        plt.xlabel("X Position [m]")
+        plt.ylabel("Y Position [m]")
+        plt.title(f"PRM Graph for N={N_SAMPLE}, k={N_KNN}, m={MAX_EDGE_LEN}, rr={rr}")
+        plt.legend()
         plt.show()
         print("done")
     
@@ -341,7 +348,7 @@ def main(rng=None):
     sy = 10.0  # [m]
     gx = 50.0  # [m]
     gy = 50.0  # [m]
-    robot_size = 1.0  # [m]
+    robot_size = 2.0  # [m]
 
     ox = []
     oy = []
